@@ -1,0 +1,28 @@
+title: API to manage historical exchange rates
+
+developerOrganization: FF
+
+developerOrganizationUrl: https://github.com/frafa
+
+sourceFolder: src/main/java
+
+groupId: it.ff.hexagonal.tdd
+artifactId: exchange-rate-service
+artifactVersion: 1.0.0
+artifactDescription: Exchange rate service
+
+basePackage: it.ff.hexagonal.tdd.histexrate
+
+modelPackage: it.ff.hexagonal.tdd.histexrate.codegen.model
+apiPackage: it.ff.hexagonal.tdd.histexrate.codegen.api
+invokerPackage: it.ff.hexagonal.tdd.histexrate.codegen.invoker
+configPackage: it.ff.hexagonal.tdd.histexrate.codegen.appConfig
+
+java8: true
+serializableModel: true
+fullJavaUtil: true
+delegatePattern: true
+interfaceOnly: false
+useBeanValidation: true
+performBeanValidation: true
+dateLibrary: java8

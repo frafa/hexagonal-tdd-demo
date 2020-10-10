@@ -1,0 +1,376 @@
+---
+openapi: 3.0.2
+info:
+  title: exchange-rate-service
+  version: 0.1.0
+  description: Manage historical exchange rates
+  contact:
+    name: Francesco
+    url: https://github.com/frafa
+    email: ff@gmail.com
+paths:
+  /convert-to:
+    summary: Convert amount from base currency to another currency
+    description: Convert an amount from one base currency to another. If none is EUR
+      the exchange rate is calculated using two exchange rate with EUR as base currency.
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/converted_amount'
+              examples:
+                importo_in_valuta_ex:
+                  value:
+                    currency: some text
+                    exchange_rates:
+                      - rate: 7.21
+                        currency: some text
+                        date: 2018-01-17
+                      - rate: 23.15
+                        currency: some text
+                        date: 2018-01-17
+                    amount: 56.08
+          description: Return the amount converted from base currency to another,
+            all the eschange rate used will be returned.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Bad request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Internal Server Error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Service Unavailable
+      operationId: getConvertedAmount
+      summary: Convert amount from base currency to another
+    parameters:
+      - name: currency_from
+        description: Currency (ISO 4217 code) you want to convert from.
+        schema:
+          type: string
+        in: query
+        required: true
+      - name: currency_to
+        description: Destination currency (ISO 4217 code) you want to convert.
+        schema:
+          type: string
+        in: query
+        required: true
+      - name: date
+        description: Date (ISO format) used to retrieve historic exchange rate
+        schema:
+          format: date
+          type: string
+        in: query
+        required: false
+      - name: amount
+        description: Amount to be converted
+        schema:
+          type: number
+        in: query
+        required: true
+  /historic-rate:
+    summary: Path used to manage the historical exchange rates.
+    description: Endpoint of find, insert, update and delete exchange rate from historical
+      archive.
+    get:
+      parameters:
+        - name: currency
+          description: currency code ISO 4217 to be retrieved
+          schema:
+            type: string
+          in: query
+          required: false
+        - name: date
+          description: date to be retrieved
+          schema:
+            format: date
+            type: string
+          in: query
+          required: false
+        - name: page
+          description: |-
+            the page number to request.
+            the page number is 0-based (default 0).
+          schema:
+            type: integer
+          in: query
+          required: false
+        - name: size
+          description: |-
+            results per page
+            the default is 10
+          schema:
+            type: integer
+          in: query
+          required: false
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/historic_rates_list'
+          description: Return a list of historical exchange rates.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Bad request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Unauthorized
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Internal Server Error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Service Unavailable
+      operationId: getHistoricRates
+      summary: Retrieve historic exchange rates.
+      description: |-
+        Retrieve a list oh historic rate according to parameters.
+        The number of elements returned depends on page and size parameter.
+    put:
+      requestBody:
+        description: Informazioni utili ad aggiornare il record
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/exchange_rate'
+        required: true
+      responses:
+        "204":
+          description: Update successful.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Bad request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Internal Server Error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Service Unavailable
+      operationId: updateExchangeRate
+      summary: Update an historical exchange rate
+      description: Update historical exchange rate record.
+    post:
+      requestBody:
+        description: Il nuovo elemento dello storico cambi da creare
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/exchange_rate'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exchange_rate'
+          description: Successful response.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Bad request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Internal Server Error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Service Unavailable
+      operationId: insertExchangeRate
+      summary: Insert or update an historical rate.
+      description: 'Insert new historical rate record, if already exists a record
+        with the same currency and date it will be update. '
+    delete:
+      parameters:
+        - name: currency
+          description: Currency code (ISO 4217) of the exchange rate to delete.
+          schema:
+            type: string
+          in: query
+          required: false
+        - name: date
+          description: Date (ISO format) of the exchange rate to delete.
+          schema:
+            format: date
+            type: string
+          in: query
+          required: false
+      responses:
+        "204":
+          description: Record delete.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Bad request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Internal Server Error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_error'
+          description: Service Unavailable
+      operationId: deleteExchangeRate
+      summary: Delete an historical rate record
+      description: ""
+components:
+  schemas:
+    response_error:
+      description: Error response
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        errorList:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_detail'
+          xml:
+            name: dettaglio_errore
+    error_detail:
+      description: Error detail
+      type: object
+      properties:
+        fieldName:
+          type: string
+        value:
+          type: string
+        description:
+          type: string
+      xml:
+        name: dettaglio_errore
+    exchange_rate:
+      title: Root Type for elemento_storico_cambi
+      description: Exchange rate
+      required:
+        - date
+        - currency
+        - rate
+      type: object
+      properties:
+        rate:
+          type: number
+        currency:
+          type: string
+        date:
+          format: date
+          type: string
+      example:
+        rate: 23.06
+        currency: CHF
+        date: 2018-01-17
+    converted_amount:
+      title: Root Type for importo_in_valuta
+      description: Object returned from convert_to operation
+      required:
+        - exchange_rates
+        - currency
+        - amount
+      type: object
+      properties:
+        currency:
+          description: 'Currency of converted amount '
+          type: string
+        exchange_rates:
+          description: List of exchange rates used to convert amount. The number of
+            exchange rates is more than one if the base currency or the destination
+            currency are not EUR.
+          type: array
+          items:
+            $ref: '#/components/schemas/exchange_rate'
+        amount:
+          description: Converted amount
+          type: number
+      example:
+        currency: USD
+        exchange_rates:
+          - rate: 86.1
+            currency: CHF
+            date: 2018-01-17
+          - rate: 82.25
+            currency: USD
+            date: 2018-01-17
+        amount: 65.48
+    historic_rates_list:
+      title: Root Type for lista_record_storico_cambi
+      description: List of exchange rates
+      type: object
+      properties:
+        historic_rates:
+          type: array
+          items:
+            $ref: '#/components/schemas/exchange_rate'
+      example:
+        historic_rates:
+          - rate: 48.09
+            currency: CHF
+            date: 2018-01-17
+          - rate: 64.14
+            currency: USD
+            date: 2018-01-17
