@@ -7,6 +7,7 @@ import it.ff.hexagonal.tdd.histexrate.codeimpl.application.exception.BadRequestE
 import it.ff.hexagonal.tdd.histexrate.codeimpl.application.exception.GenericServiceException;
 import it.ff.hexagonal.tdd.histexrate.codeimpl.application.exception.NotFoundException;
 import it.ff.hexagonal.tdd.histexrate.codeimpl.application.exception.ServiceUnavailableException;
+import it.ff.hexagonal.tdd.histexrate.codeimpl.application.port.HistoricalExchangeRatesUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ import java.util.List;
 public class HistoricRateApiDelegateImpl implements HistoricRateApiDelegate {
 
     @Autowired
-    private it.ff.hexagonal.tdd.histexrate.codeimpl.application.port.HistoricalExchangeRatesUseCase HistoricalExchangeRatesUseCase;
+    private HistoricalExchangeRatesUseCase historicalExchangeRatesUseCase;
 
     @Override
     public ResponseEntity<HistoricRatesList> getHistoricRates(String currency,
@@ -30,7 +31,7 @@ public class HistoricRateApiDelegateImpl implements HistoricRateApiDelegate {
                                                               Integer size) {
         HistoricRatesList response;
         try {
-            List<ExchangeRate> l = HistoricalExchangeRatesUseCase.getHistoricExchangeRate(page, size, currency, date);
+            List<ExchangeRate> l = historicalExchangeRatesUseCase.getHistoricExchangeRate(page, size, currency, date);
 
             response = new HistoricRatesList();
             response.historicRates(l);
@@ -43,11 +44,11 @@ public class HistoricRateApiDelegateImpl implements HistoricRateApiDelegate {
     }
 
     @Override
-    public ResponseEntity<ExchangeRate> insertExchangeRate(ExchangeRate ExchangeRate) {
+    public ResponseEntity<ExchangeRate> insertExchangeRate(ExchangeRate exchangeRate) {
         ExchangeRate response;
 
         try {
-            response = HistoricalExchangeRatesUseCase.insertExchangeRate(ExchangeRate);
+            response = historicalExchangeRatesUseCase.insertExchangeRate(exchangeRate);
         } catch (ServiceUnavailableException ex) {
             throw ex;
         } catch (Exception e) {
@@ -57,9 +58,9 @@ public class HistoricRateApiDelegateImpl implements HistoricRateApiDelegate {
     }
 
     @Override
-    public ResponseEntity<Void> updateExchangeRate(ExchangeRate ExchangeRate) {
+    public ResponseEntity<Void> updateExchangeRate(ExchangeRate exchangeRate) {
         try {
-            int i = HistoricalExchangeRatesUseCase.updateExchangeRate(ExchangeRate);
+            int i = historicalExchangeRatesUseCase.updateExchangeRate(exchangeRate);
             if (i == 0) {
                 throw new NotFoundException("Exchange rate not found.");
             }
@@ -79,7 +80,7 @@ public class HistoricRateApiDelegateImpl implements HistoricRateApiDelegate {
         }
 
         try {
-            HistoricalExchangeRatesUseCase.deleteExchangeRate(currency, date);
+            historicalExchangeRatesUseCase.deleteExchangeRate(currency, date);
         } catch (EmptyResultDataAccessException x) {
             throw new NotFoundException(x);
         } catch (ServiceUnavailableException ex) {

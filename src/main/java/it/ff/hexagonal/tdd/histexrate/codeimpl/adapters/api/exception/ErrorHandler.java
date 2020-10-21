@@ -17,70 +17,70 @@ import org.springframework.web.util.WebUtils;
 
 
 /**
- * Handler delle eccezioni utile a comppilare una response con le informazioni desiderate.
+ * Excption Handler
  */
 @ControllerAdvice
 public class ErrorHandler extends ResponseEntityExceptionHandler {
     /**
-     * Gestisce tutte le eccezioni "Throwable" non gestite esplicitamente
-     * Attualmente viene gestito nel caso di "GenericServiceException" il return code 500
-     * per tutte le altre si rimanda al metodo padre
+     * Handle all the "Throwable" exception not managed directly
+     * Actualy manage GenericServiceException and return code 500 (INTERNAL SERVER ERROR)
+     * for the other exception the parent method is called
      *
-     * @param ex      eccezione
+     * @param ex      exception
      * @param request web request
-     * @return Oggetto di risposta del servizio rest con le informazioni sull'errore
+     * @return response object with the error information
      */
     @ExceptionHandler({Throwable.class})
     public ResponseEntity<Object> handleException(RuntimeException ex, WebRequest request) throws Exception {
         if (ex instanceof GenericServiceException) {
             HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-            return handleExceptionInternal(ex, ResponseErrorFactory.create("500", "Errore tecnico"), new HttpHeaders(), status, request);
+            return handleExceptionInternal(ex, ResponseErrorFactory.create("500", "Internal error"), new HttpHeaders(), status, request);
         }
 
         return super.handleException(ex, request);
     }
 
     /**
-     * Gestisce le eccezzioni di tipo NotFoundException
+     * Handle NotFoundException
      *
-     * @param ex      eccezione
+     * @param ex      exception
      * @param request web request
-     * @return risposta del servizio con i dati dell'eccezione e return status code 401
+     * @return response object with the error information, return code 404
      */
     @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<Object> handleNoHandlerFoundException(RuntimeException ex, WebRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
-        return handleExceptionInternal(ex, ResponseErrorFactory.create("404", "Risorsa non presente."), new HttpHeaders(), status, request);
+        return handleExceptionInternal(ex, ResponseErrorFactory.create("404", "Object not found."), new HttpHeaders(), status, request);
     }
 
     /**
-     * Gestisce le eccezzioni di tipo Service Unavailable
+     * Handle Service Unavailable exception
      *
-     * @param ex      eccezione
+     * @param ex      exception
      * @param request web request
-     * @return risposta del servizio con i dati dell'eccezione e return status code 401
+     * @return response object with the error information, return code 503
      */
     @ExceptionHandler({ServiceUnavailableException.class})
     public ResponseEntity<Object> handleServiceUnavailableException(RuntimeException ex, WebRequest request) {
         HttpStatus status = HttpStatus.SERVICE_UNAVAILABLE;
-        return handleExceptionInternal(ex, ResponseErrorFactory.create("503", "Errore servizio non disponibile"), new HttpHeaders(), status, request);
+        return handleExceptionInternal(ex, ResponseErrorFactory.create("503", "Service unavilable"), new HttpHeaders(), status, request);
     }
 
     /**
-     * Gestisce le eccezzioni di tipo Bad Request
+     * Handle Bad Request exception
      *
-     * @param ex      eccezione
+     * @param ex      exception
      * @param request web request
-     * @return risposta del servizio con i dati dell'eccezione e return status code 401
+     * @return response object with the error information, return code 400
      */
     @ExceptionHandler({BadRequestException.class})
     public ResponseEntity<Object> handleBadRequestException(RuntimeException ex, WebRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        return handleExceptionInternal(ex, ResponseErrorFactory.create("400", "Errore richiesta non valida"), new HttpHeaders(), status, request);
+        return handleExceptionInternal(ex, ResponseErrorFactory.create("400", "Bad Request"), new HttpHeaders(), status, request);
     }
 
     /**
-     * Costruisce per tutte le eccezioni, anche non esplicitamente gestite, un oggetto di risposta adeguato.
+     * Build the response object
      */
     @Override
     public ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatus status,

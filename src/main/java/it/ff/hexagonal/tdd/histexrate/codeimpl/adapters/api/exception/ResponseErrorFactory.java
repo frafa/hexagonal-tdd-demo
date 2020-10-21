@@ -2,6 +2,9 @@ package it.ff.hexagonal.tdd.histexrate.codeimpl.adapters.api.exception;
 
 import it.ff.hexagonal.tdd.histexrate.codegen.model.ResponseError;
 
+/**
+ * Build the error object used in response object
+ */
 public class ResponseErrorFactory {
     private ResponseErrorFactory() {
     }

@@ -82,7 +82,7 @@ public interface HistoricRateApiDelegate {
      * POST /historic-rate : Insert or update an historical rate.
      * Insert new historical rate record, if already exists a record with the same currency and date it will be update.
      *
-     * @param exchangeRate Il nuovo elemento dello storico cambi da creare (required)
+     * @param exchangeRate The element to insert (required)
      * @return Successful response. (status code 201)
      * or Bad request (status code 400)
      * or Internal Server Error (status code 500)
@@ -107,7 +107,7 @@ public interface HistoricRateApiDelegate {
      * PUT /historic-rate : Update an historical exchange rate
      * Update historical exchange rate record.
      *
-     * @param exchangeRate Informazioni utili ad aggiornare il record (required)
+     * @param exchangeRate The element to update (required)
      * @return Update successful. (status code 204)
      * or Bad request (status code 400)
      * or Not found (status code 404)

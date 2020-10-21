@@ -159,7 +159,7 @@ paths:
         The number of elements returned depends on page and size parameter.
     put:
       requestBody:
-        description: Informazioni utili ad aggiornare il record
+        description: the record to update
         content:
           application/json:
             schema:
@@ -197,7 +197,7 @@ paths:
       description: Update historical exchange rate record.
     post:
       requestBody:
-        description: Il nuovo elemento dello storico cambi da creare
+        description: the record to insert
         content:
           application/json:
             schema:
@@ -292,7 +292,7 @@ components:
           items:
             $ref: '#/components/schemas/error_detail'
           xml:
-            name: dettaglio_errore
+            name: error_detail
     error_detail:
       description: Error detail
       type: object
@@ -304,7 +304,7 @@ components:
         description:
           type: string
       xml:
-        name: dettaglio_errore
+        name: error_detail
     exchange_rate:
       title: Root Type for elemento_storico_cambi
       description: Exchange rate

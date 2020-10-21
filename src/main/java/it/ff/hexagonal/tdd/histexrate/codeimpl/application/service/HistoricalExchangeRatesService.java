@@ -2,6 +2,7 @@ package it.ff.hexagonal.tdd.histexrate.codeimpl.application.service;
 
 import it.ff.hexagonal.tdd.histexrate.codegen.model.ExchangeRate;
 import it.ff.hexagonal.tdd.histexrate.codeimpl.application.exception.ServiceUnavailableException;
+import it.ff.hexagonal.tdd.histexrate.codeimpl.application.port.HistoricalExchangeRatesPort;
 import it.ff.hexagonal.tdd.histexrate.codeimpl.application.port.HistoricalExchangeRatesUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -15,7 +16,7 @@ import java.util.List;
 public class HistoricalExchangeRatesService implements HistoricalExchangeRatesUseCase {
 
     @Autowired
-    private it.ff.hexagonal.tdd.histexrate.codeimpl.application.port.HistoricalExchangeRatesPort HistoricalExchangeRatesPort;
+    private HistoricalExchangeRatesPort historicalExchangeRatesPort;
 
     @Override
     public List<ExchangeRate> getHistoricExchangeRate(Integer offset, Integer limit, String currency, LocalDate date) {
@@ -26,13 +27,13 @@ public class HistoricalExchangeRatesService implements HistoricalExchangeRatesUs
 
         try {
             if (StringUtils.isEmpty(currency) && date == null) {
-                l = HistoricalExchangeRatesPort.findAll(off, lim);
+                l = historicalExchangeRatesPort.findAll(off, lim);
             } else if (!StringUtils.isEmpty(currency) && date == null) {
-                l = HistoricalExchangeRatesPort.findAllByIdentity_idCurrency(currency, off, lim);
+                l = historicalExchangeRatesPort.findAllByIdentity_idCurrency(currency, off, lim);
             } else if (StringUtils.isEmpty(currency) && date != null) {
-                l = HistoricalExchangeRatesPort.findAllByIdentity_idDate(date, off, lim);
+                l = historicalExchangeRatesPort.findAllByIdentity_idDate(date, off, lim);
             } else {
-                l = HistoricalExchangeRatesPort.findAllByIdentity_idCurrencyAndIdentity_idDate(currency, date, off, lim);
+                l = historicalExchangeRatesPort.findAllByIdentity_idCurrencyAndIdentity_idDate(currency, date, off, lim);
             }
 
             return l;
@@ -42,18 +43,18 @@ public class HistoricalExchangeRatesService implements HistoricalExchangeRatesUs
     }
 
     @Override
-    public ExchangeRate insertExchangeRate(ExchangeRate ExchangeRate) {
+    public ExchangeRate insertExchangeRate(ExchangeRate exchangeRate) {
         try {
-            return HistoricalExchangeRatesPort.save(ExchangeRate);
+            return historicalExchangeRatesPort.save(exchangeRate);
         } catch (Exception e) {
             throw new ServiceUnavailableException("Errore del servizio");
         }
     }
 
     @Override
-    public int updateExchangeRate(ExchangeRate ExchangeRate) {
+    public int updateExchangeRate(ExchangeRate exchangeRate) {
         try {
-            return HistoricalExchangeRatesPort.updateHistExRate(ExchangeRate);
+            return historicalExchangeRatesPort.updateHistExRate(exchangeRate);
         } catch (Exception e) {
             throw new ServiceUnavailableException("Errore del servizio");
         }
@@ -62,7 +63,7 @@ public class HistoricalExchangeRatesService implements HistoricalExchangeRatesUs
     @Override
     public void deleteExchangeRate(String currency, LocalDate date) {
         try {
-            HistoricalExchangeRatesPort.deleteHistExRate(currency, date);
+            historicalExchangeRatesPort.deleteHistExRate(currency, date);
         } catch (EmptyResultDataAccessException x) {
             throw x;
         } catch (Exception e) {

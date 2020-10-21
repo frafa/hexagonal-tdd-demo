@@ -5,22 +5,16 @@
  */
 package it.ff.hexagonal.tdd.histexrate.codegen.api;
 
+import io.swagger.annotations.*;
 import it.ff.hexagonal.tdd.histexrate.codegen.model.ExchangeRate;
 import it.ff.hexagonal.tdd.histexrate.codegen.model.HistoricRatesList;
-
-import java.time.LocalDate;
-
 import it.ff.hexagonal.tdd.histexrate.codegen.model.ResponseError;
-import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
 
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2020-10-09T22:05:16.885+02:00[Europe/Rome]")
 @Validated
@@ -93,7 +87,7 @@ public interface HistoricRateApi {
      * POST /historic-rate : Insert or update an historical rate.
      * Insert new historical rate record, if already exists a record with the same currency and date it will be update.
      *
-     * @param exchangeRate Il nuovo elemento dello storico cambi da creare (required)
+     * @param exchangeRate the element to insert (required)
      * @return Successful response. (status code 201)
      * or Bad request (status code 400)
      * or Internal Server Error (status code 500)
@@ -110,7 +104,7 @@ public interface HistoricRateApi {
             produces = {"application/json"},
             consumes = {"application/json"}
     )
-    default ResponseEntity<ExchangeRate> insertExchangeRate(@ApiParam(value = "Il nuovo elemento dello storico cambi da creare", required = true) @Valid @RequestBody ExchangeRate exchangeRate) {
+    default ResponseEntity<ExchangeRate> insertExchangeRate(@ApiParam(value = "The element to insert", required = true) @Valid @RequestBody ExchangeRate exchangeRate) {
         return getDelegate().insertExchangeRate(exchangeRate);
     }
 
@@ -119,7 +113,7 @@ public interface HistoricRateApi {
      * PUT /historic-rate : Update an historical exchange rate
      * Update historical exchange rate record.
      *
-     * @param exchangeRate Informazioni utili ad aggiornare il record (required)
+     * @param exchangeRate the element to update (required)
      * @return Update successful. (status code 204)
      * or Bad request (status code 400)
      * or Not found (status code 404)
@@ -138,7 +132,7 @@ public interface HistoricRateApi {
             produces = {"application/json"},
             consumes = {"application/json"}
     )
-    default ResponseEntity<Void> updateExchangeRate(@ApiParam(value = "Informazioni utili ad aggiornare il record", required = true) @Valid @RequestBody ExchangeRate exchangeRate) {
+    default ResponseEntity<Void> updateExchangeRate(@ApiParam(value = "The element to update", required = true) @Valid @RequestBody ExchangeRate exchangeRate) {
         return getDelegate().updateExchangeRate(exchangeRate);
     }
 
