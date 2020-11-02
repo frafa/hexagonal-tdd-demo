@@ -42,13 +42,13 @@ public class HistoricalExchangeRatesRepository implements HistoricalExchangeRate
     }
 
     @Override
-    public ExchangeRate save(ExchangeRate ExchangeRate) {
-        return mapperToExchangeRate(repository.save(mapperToHistExRate(ExchangeRate)));
+    public ExchangeRate save(ExchangeRate exchangeRate) {
+        return mapperToExchangeRate(repository.save(mapperToHistExRate(exchangeRate)));
     }
 
     @Override
-    public int updateHistExRate(ExchangeRate ExchangeRate) {
-        return repository.updateHistExRate(mapperToHistExRate(ExchangeRate));
+    public int updateHistExRate(ExchangeRate exchangeRate) {
+        return repository.updateHistExRate(mapperToHistExRate(exchangeRate));
     }
 
     @Override
@@ -56,13 +56,13 @@ public class HistoricalExchangeRatesRepository implements HistoricalExchangeRate
         repository.deleteById(new HistExRateIdentity(currency, data));
     }
 
-    private ExchangeRate mapperToExchangeRate(HistExRate HistExRate) {
+    private ExchangeRate mapperToExchangeRate(HistExRate histExRate) {
         ExchangeRate cs = null;
-        if (HistExRate != null && HistExRate.getIdentity() != null && HistExRate.getIdentity().getIdCurrency() != null) {
+        if (histExRate != null && histExRate.getIdentity() != null && histExRate.getIdentity().getIdCurrency() != null) {
             cs = new ExchangeRate();
-            cs.setRate(HistExRate.getRate());
-            cs.setDate(HistExRate.getIdentity().getIdDate());
-            cs.setCurrency(HistExRate.getIdentity().getIdCurrency());
+            cs.setRate(histExRate.getRate());
+            cs.setDate(histExRate.getIdentity().getIdDate());
+            cs.setCurrency(histExRate.getIdentity().getIdCurrency());
         }
         return cs;
     }
@@ -70,8 +70,8 @@ public class HistoricalExchangeRatesRepository implements HistoricalExchangeRate
     private List<ExchangeRate> mappertToExchangeRate(Iterable<HistExRate> i) {
         List<ExchangeRate> res = new ArrayList<>();
 
-        for (HistExRate HistExRate : i) {
-            res.add(mapperToExchangeRate(HistExRate));
+        for (HistExRate histExRate : i) {
+            res.add(mapperToExchangeRate(histExRate));
         }
 
         return res;
