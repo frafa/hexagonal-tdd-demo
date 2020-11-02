@@ -54,21 +54,21 @@ public class HistExRateRepositoryTest {
 
     @Test
     public void should_return_empty_on_update_non_existent_HistExRate() {
-        HistExRate s = HistExRate.builder().identity(new HistExRateIdentity("TRY", LocalDate.parse("2020-01-01"))).rate(BigDecimal.valueOf(1.1)).build();
+        HistExRate s = new HistExRate(new HistExRateIdentity("TRY", LocalDate.parse("2020-01-01")), BigDecimal.valueOf(1.1));
         int i = repository.updateHistExRate(s);
         assertThat(i).isEqualTo(0);
     }
 
     @Test
     public void should_update_HistExRate() {
-        HistExRate s = HistExRate.builder().identity(new HistExRateIdentity("CHF", LocalDate.parse("2020-01-01"))).rate(BigDecimal.valueOf(0.56)).build();
+        HistExRate s = new HistExRate(new HistExRateIdentity("CHF", LocalDate.parse("2020-01-01")), BigDecimal.valueOf(0.56));
         int i = repository.updateHistExRate(s);
         assertThat(i).isEqualTo(1);
     }
 
     @Test
     public void should_insert_new_HistExRate() {
-        HistExRate s = HistExRate.builder().identity(new HistExRateIdentity("TRY", LocalDate.parse("2020-01-01"))).rate(BigDecimal.valueOf(0.56)).build();
+        HistExRate s = new HistExRate(new HistExRateIdentity("TRY", LocalDate.parse("2020-01-01")), BigDecimal.valueOf(0.56));
         HistExRate x = repository.save(s);
         assertThat(x).isEqualTo(s);
     }
